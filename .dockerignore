@@ -1,0 +1,8 @@
+.git
+.idea
+.vscode
+docker
+.storage
+node_modules
+data
+.gitlab-ci.yml

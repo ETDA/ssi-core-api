@@ -1,0 +1,77 @@
+version: '3.0'
+
+services:
+  abci:
+    build:
+      context: .
+      dockerfile: ./docker/abci/Dockerfile
+    image: abci:latest
+    container_name: abci
+    restart: always
+    environment:
+      - APP_SERVICE=ABCI
+    ports:
+      - 26656-26657:26656-26657
+    volumes:
+      - .:/app
+
+  did:
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    image: did:latest
+    container_name: did
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+    environment:
+      - APP_SERVICE=DID
+    depends_on:
+      - mongo
+
+  vc_status:
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    image: vc_status:latest
+    container_name: vc_status
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - 8082:8080
+    environment:
+      - APP_SERVICE=VC_STATUS
+    depends_on:
+      - mongo
+
+  tendermint_init:
+    image: tendermint/tendermint:v0.34.11
+    container_name: tendermint_init
+    command: "init"
+    volumes:
+      - .storage/tendermint:/tendermint
+
+  mongo:
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    image: mongo:4.4.2-bionic
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - .storage/mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: my_username
+      MONGO_INITDB_ROOT_PASSWORD: my_password
+
+networks:
+  default:
+    external:
+      name: dev_network

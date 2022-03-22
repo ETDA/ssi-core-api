@@ -1,18 +1,35 @@
-# SSI Core API
 
-## Introduction
-\
+<h1 align="center">
+    Core API 
+</h1>
+
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#development">Development</a> 
+</p>
+
+## About
+
+The SSI Core API are the service that interact with blockchain for verifying documents in the system. 
+
 This repository contain 4 services
 - abci
 - did-api
 - vc-status-api
 - vc-verify
 
-It's easier to maintain because these 4 services always communicate with each other and easier to develop the services.
+these 4 services always communicate with each other and easier to develop the services.
 
 However, we run the services separately, by define the environment when start the service.
 
-## Step to start the service
+## Development
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+
+#### Start Service
+
 - Copy file `.env.sample` to `.env`
 - run `docker-compose up -d`
 - you can access the service via `http:localhost:{port}`
@@ -22,11 +39,7 @@ However, we run the services separately, by define the environment when start th
     - vc-status-api : `8082`
     - vc-verify : `8082`
 
-
-
-
-
-## After service `tendermint_init` was run
+#### After service `tendermint_init` was run
 go to .storage/tendermint/config to edit config.toml
 
 - edit `create_empty_blocks` to `false` (default=`true`)
@@ -37,3 +50,5 @@ go to .storage/tendermint/config to edit config.toml
 - edit `[rpc] laddr = "tcp://0.0.0.0:26657"` (default=`tcp://127.0.0.1:26657`)
 
 Then, restart all services again by `docker-compose restart`
+
+
